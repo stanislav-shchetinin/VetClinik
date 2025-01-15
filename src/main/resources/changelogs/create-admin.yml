@@ -1,0 +1,26 @@
+databaseChangeLog:
+  -  changeSet:
+       author: Stas
+       id: create-admin
+       changes:
+         - insert:
+             tableName: users
+             columns:
+               - column:
+                   name: username
+                   value: admin@admin.ru
+               - column:
+                   name: password
+                   value: $2a$11$FhD8xRtSzZqBl66D68kXuuyLcAh8ZhWDGNdy./BuKPDeWFJ3E52u2
+               - column:
+                   name: enabled
+                   value: true
+         - insert:
+             tableName: authorities
+             columns:
+               - column:
+                   name: username
+                   value: admin@admin.ru
+               - column:
+                   name: authority
+                   value: ROLE_ADMIN

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  drop-tables:0.0.3
+       author:  Stas
+       changes:
+         - dropAllForeignKeyConstraints:
+             baseTableName: users
+         - dropAllForeignKeyConstraints:
+             baseTableName: groups_e
+         - dropAllForeignKeyConstraints:
+             baseTableName: users_groups

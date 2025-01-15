@@ -1,0 +1,24 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  create-user-app
+       author:  Stas
+       changes:
+         -  createTable:
+              tableName:  users
+              columns:
+                -  column:
+                     name:  username
+                     type:  varchar(512)
+                     constraints:
+                       primaryKey:  true
+                -  column:
+                     name:  password
+                     type:  varchar(512)
+                     constraints:
+                       nullable:  false
+                - column:
+                    name: activation_code
+                    type: varchar(512)
+                - column:
+                    name: enabled
+                    type: boolean

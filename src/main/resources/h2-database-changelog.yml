@@ -1,0 +1,15 @@
+databaseChangeLog:
+#  - include:
+#      file: classpath:changelogs/drop-tables.yml
+#  - include:
+#      file: classpath:changelogs/create-users.yml
+#  - include:
+#      file: classpath:changelogs/create-authorities.yml
+#  - include:
+#      file: classpath:changelogs/create-admin.yml
+#  - include:
+#      file: classpath:changelogs/create-indexes.yml
+#  - include:
+#      file: classpath:changelogs/create-groups.yml
+#  - include:
+#      file: classpath:changelogs/create-users-groups.yml

@@ -1,0 +1,46 @@
+spring:
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
+  datasource:
+    url: ${POSTGRES_PATH}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driverClassName: org.postgresql.Driver
+  h2:
+    console.enabled: true
+  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+  liquibase:
+    change-log: classpath:h2-database-changelog.yml
+  mail:
+    host: ${EMAIL_HOST}
+    port: ${EMAIL_PORT}
+    username: ${EMAIL_ID}
+    password: ${EMAIL_PASSWORD}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        mime:
+          charset: UTF
+        smtp:
+          writetimeout: 10000
+          connectiontimeout: 10000
+          timeout: 10000
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+    verify:
+      host: ${VERIFY_EMAIL_HOST}
+  server:
+    port: ${SERVER_PORT:8080}
+
+jwt:
+  secret: ${JWT_SECRET}
+  lifetime: 30m
+
+services:
+  frontend: "http://localhost:3000"
+

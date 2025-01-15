@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Members</title>
+
+    <!-- Main css -->
+    <link rel="stylesheet" type="text/css" href = "../css/style.css">
+</head>
+<body>
+    <main>
+        <button class="button button-shadow btn-back">⬅</button>
+        <h1 class="header">Members</h1>
+        <button onclick="window.dialog.showModal();" class="button button-shadow btn-new-group">New person</button>
+
+        <dialog id="dialog">
+            <h2>Add new person</h2>
+            <div class="form-container">
+                <div class="form">
+                    <input type="text" name="name" class="name" placeholder="Name" />
+                    <button class="button button-shadow btn-new-group btn-crete">Add</button>
+                </div>
+            </div>
+            <button onclick="window.dialog.close();" aria-label="close" class="x">❌</button>
+        </dialog>
+
+        <ol class="gradient-list members"></ol>
+    </main>
+    <script type="module" src="../js/members.js"></script>
+</body>
+</html>

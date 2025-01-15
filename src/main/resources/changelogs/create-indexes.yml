@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id:  create-indexes
+      author:  Stas
+      changes:
+        - createIndex:
+            columns:
+              - column:
+                  name:  activation_code
+            indexName:  idx_activation_code
+            tableName:  users

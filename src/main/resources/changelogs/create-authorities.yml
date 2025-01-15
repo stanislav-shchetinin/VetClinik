@@ -1,0 +1,16 @@
+databaseChangeLog:
+  -  changeSet:
+       id:  create-user-app
+       author:  Stas
+       changes:
+         -  createTable:
+              tableName:  authorities
+              columns:
+                -  column:
+                     name:  username
+                     type:  varchar(512)
+                     constraints:
+                       primaryKey:  true
+                -  column:
+                     name:  authority
+                     type:  varchar(256)
