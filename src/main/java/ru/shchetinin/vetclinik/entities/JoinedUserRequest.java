@@ -8,7 +8,7 @@ import lombok.Setter;
 @Table(name = "users_groups")
 @Getter
 @Setter
-public class JoinedUserGroup {
+public class JoinedUserRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class JoinedUserGroup {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
-    private Group group;
+    private Request request;
 
     @ManyToOne
     @JoinColumn(name = "user_name")

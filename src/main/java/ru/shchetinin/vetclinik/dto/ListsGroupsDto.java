@@ -13,6 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ListsGroupsDto {
-    private List<GroupDto> adminGroups = new ArrayList<>();
+    private List<RequestDto> adminGroups = new ArrayList<>();
     private List<GroupMemberDto> memberGroups = new ArrayList<>();
 }

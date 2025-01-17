@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-clinic-table
+      author: Stas
+      changes:
+        - createTable:
+            tableName: clinic
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    autoIncrement: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street
+                  type: varchar(255)
+              - column:
+                  name: house
+                  type: varchar(50)
+              - column:
+                  name: open_hours
+                  type: varchar(100)
+              - column:
+                  name: clinic_phone
+                  type: varchar(50)
+              - column:
+                  name: user_username
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: clinic
+            baseColumnNames: user_username
+            referencedTableName: users
+            referencedColumnNames: username

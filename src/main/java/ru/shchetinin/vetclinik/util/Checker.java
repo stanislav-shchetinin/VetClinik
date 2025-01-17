@@ -1,6 +1,6 @@
 package ru.shchetinin.vetclinik.util;
 
-import ru.shchetinin.vetclinik.entities.Group;
+import ru.shchetinin.vetclinik.entities.Request;
 import ru.shchetinin.vetclinik.exceptions.NotFoundGroupException;
 import ru.shchetinin.vetclinik.exceptions.NotRealCreatorException;
 import ru.shchetinin.vetclinik.exceptions.UserNotFoundException;
@@ -15,13 +15,13 @@ public class Checker {
             throw new UserNotFoundException();
         }
     }
-    public static void isGroupExist(Optional<Group> group){
+    public static void isGroupExist(Optional<Request> group){
         if (group.isEmpty()){
             throw new NotFoundGroupException();
         }
     }
 
-    public static void isRealCreator(Group group, Principal principal){
+    public static void isRealCreator(Request group, Principal principal){
         String nameRealCreator = group.getOwner().getUsername();
         String nameCheckCreator = principal.getName();
         boolean isRealCreator = nameRealCreator.equals(nameCheckCreator);

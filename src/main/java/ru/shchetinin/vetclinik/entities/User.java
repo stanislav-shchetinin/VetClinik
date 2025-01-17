@@ -2,6 +2,7 @@ package ru.shchetinin.vetclinik.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.shchetinin.vetclinik.authorization.roles.RoleAdd;
 
 import java.util.*;
 
@@ -18,15 +19,17 @@ public class User implements Comparable<User>{
     private String password;
     private String activationCode;
     private boolean enabled;
+    private RoleAdd role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<JoinedUserGroup> jug = new ArrayList<>();
+    private List<JoinedUserRequest> jug = new ArrayList<>();
 
-    public User(String username, String password, String activationCode, boolean enabled) {
+    public User(String username, String password, String activationCode, boolean enabled, RoleAdd roleAdd) {
         this.username = username;
         this.password = password;
         this.activationCode = activationCode;
         this.enabled = enabled;
+        this.role = roleAdd;
     }
 
     @Override

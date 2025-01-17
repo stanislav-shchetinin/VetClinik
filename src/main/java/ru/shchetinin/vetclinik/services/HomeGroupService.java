@@ -3,11 +3,11 @@ package ru.shchetinin.vetclinik.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import ru.shchetinin.vetclinik.dto.GroupDto;
+import ru.shchetinin.vetclinik.dto.RequestDto;
 import ru.shchetinin.vetclinik.dto.GroupMemberDto;
 import ru.shchetinin.vetclinik.dto.ListsGroupsDto;
-import ru.shchetinin.vetclinik.entities.Group;
-import ru.shchetinin.vetclinik.entities.JoinedUserGroup;
+import ru.shchetinin.vetclinik.entities.Request;
+import ru.shchetinin.vetclinik.entities.JoinedUserRequest;
 import ru.shchetinin.vetclinik.entities.User;
 import ru.shchetinin.vetclinik.exceptions.GroupAlreadyExistException;
 import ru.shchetinin.vetclinik.exceptions.NotFoundGroupDeleteException;
@@ -31,17 +31,16 @@ public class HomeGroupService {
     public ResponseEntity<ListsGroupsDto> getGroups(Principal principal){
         ListsGroupsDto listsGroupsDto = new ListsGroupsDto();
         User user = userRepo.findByUsername(principal.getName());
-        List<Group> groups = new ArrayList<>();
-        user.getJug().forEach(jug -> groups.add(jug.getGroup()));
+        List<Request> groups = new ArrayList<>();
         groups
                 .forEach(group -> {
-                    GroupDto groupDto = new GroupDto(group.getId(), group.getName(), group.getDescription());
+//                    RequestDto requestDto = new RequestDto(group.getId(), group.getName(), group.getDescription());
                     if (group.getOwner().equals(user)){
-                        listsGroupsDto.getAdminGroups().add(groupDto);
+                        listsGroupsDto.getAdminGroups().add(requestDto);
                     } else {
                         listsGroupsDto.getMemberGroups().add(
                                 new GroupMemberDto(
-                                    groupDto,
+                                        requestDto,
                                     jugRepository.findByUserAndGroup(user, group).getNumberClasses()
                                 )
                         );
@@ -50,26 +49,26 @@ public class HomeGroupService {
         return ResponseEntity.ok(listsGroupsDto);
     }
 
-    public void createNewGroup(GroupDto groupDto, Principal principal){
+    public void createNewGroup(RequestDto requestDto, Principal principal){
         User user = userRepo.findByUsername(principal.getName());
-        Optional<Group> groupInBase = groupRepository.findById(groupDto.getId());
+        Optional<Request> groupInBase = groupRepository.findById(requestDto.getId());
         if (groupInBase.isPresent()){
             throw new GroupAlreadyExistException();
         }
-        Group group = new Group(
-                groupDto.getId(),
-                groupDto.getName(),
-                groupDto.getDescription(),
+        Request group = new Request(
+                requestDto.getId(),
+                requestDto.getName(),
+                requestDto.getDescription(),
                 user);
         groupRepository.save(group);
-        JoinedUserGroup jug = new JoinedUserGroup();
+        JoinedUserRequest jug = new JoinedUserRequest();
         jug.setGroup(group);
         jug.setUser(user);
         jugRepository.save(jug);
     }
 
     public void deleteGroup(UUID id, Principal principal){
-        Optional<Group> group = groupRepository.findById(id);
+        Optional<Request> group = groupRepository.findById(id);
         if (group.isPresent()){
             isRealCreator(group.get(), principal);
             groupRepository.delete(group.get());

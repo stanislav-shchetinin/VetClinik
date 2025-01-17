@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.shchetinin.vetclinik.dto.GroupDto;
+import ru.shchetinin.vetclinik.dto.RequestDto;
 import ru.shchetinin.vetclinik.dto.ListsGroupsDto;
 import ru.shchetinin.vetclinik.services.HomeGroupService;
 
@@ -15,14 +15,14 @@ import java.security.Principal;
 import java.util.*;
 
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/api/request")
 @RequiredArgsConstructor
-public class HomeGroupController {
+public class RequestController {
 
     private final HomeGroupService homeGroupService;
     @GetMapping
     @Operation(
-            summary = "Получить все группы пользователя"
+            summary = "Получить все заявки пользователя"
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -40,16 +40,16 @@ public class HomeGroupController {
 
     @PostMapping("/create")
     @Operation(
-            summary = "Получить все группы пользователя"
+            summary = "Создать заявку"
     )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Группа создана"
+                    description = "Создана"
             ),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Группа с таким id уже существует"
+                    description = "Заявка с таким id уже существует"
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -57,18 +57,18 @@ public class HomeGroupController {
             )
     })
     @ResponseStatus(HttpStatus.OK)
-    public void createNewGroup(@RequestBody GroupDto groupDto, Principal principal){
-        homeGroupService.createNewGroup(groupDto, principal);
+    public void createNewGroup(@RequestBody RequestDto requestDto, Principal principal){
+        homeGroupService.createNewGroup(requestDto, principal);
     }
     @DeleteMapping("/{id}/delete")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Группа создана"
+                    description = "Заявка создана"
             ),
             @ApiResponse(
                     responseCode = "204",
-                    description = "Такой группы нет"
+                    description = "Заявки нет"
             ),
             @ApiResponse(
                     responseCode = "401",

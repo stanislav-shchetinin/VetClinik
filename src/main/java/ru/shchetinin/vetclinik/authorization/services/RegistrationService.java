@@ -10,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import ru.shchetinin.vetclinik.authorization.dao.AuthorityRepository;
+import ru.shchetinin.vetclinik.entities.Clinic;
+import ru.shchetinin.vetclinik.repositories.ClinicRepository;
 import ru.shchetinin.vetclinik.repositories.UserRepository;
 import ru.shchetinin.vetclinik.authorization.entities.Authority;
 import ru.shchetinin.vetclinik.entities.User;
@@ -30,6 +32,7 @@ public class RegistrationService {
     private final AuthorityRepository authorityRepo;
     private final PasswordEncoder encoder;
     private final EmailSender emailSender;
+    private final ClinicRepository clinicRepository;
 
     public Response addNewUser(User user) throws UserAlreadyExistsException {
         String login = user.getUsername();
@@ -43,10 +46,15 @@ public class RegistrationService {
             user.setActivationCode(UUID.randomUUID().toString());
             userRepo.save(user);
             log.debug("USER. enabled: {}, password: {}", user.isEnabled(), user.getPassword());
-            Authority authority = new Authority(user.getUsername(), RoleAdd.ROLE_USER.name());
+            Authority authority = new Authority(user.getUsername(), String.valueOf(user.getRole()));
             authorityRepo.save(authority);
             log.debug("AUTHORITY. username: {}, role: {}", authority.getUsername(), authority.getAuthority());
             sendEmail(user);
+            if (user.getRole().equals(RoleAdd.ROLE_CLINIC)) {
+                Clinic clinic = new Clinic();
+                clinic.setUser(user);
+                clinicRepository.save(clinic);
+            }
             return new Response(HttpStatus.OK.value(), "User successfully added");
         }
     }

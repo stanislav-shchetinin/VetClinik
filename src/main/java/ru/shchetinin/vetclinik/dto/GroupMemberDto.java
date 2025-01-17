@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupMemberDto {
-    private GroupDto group;
+    private RequestDto group;
     private Integer numberClasses;
 }

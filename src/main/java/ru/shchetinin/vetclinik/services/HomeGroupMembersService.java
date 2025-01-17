@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.shchetinin.vetclinik.dto.UserDto;
 import ru.shchetinin.vetclinik.dto.UserMinusDto;
 import ru.shchetinin.vetclinik.dto.UserPlusDto;
-import ru.shchetinin.vetclinik.entities.Group;
-import ru.shchetinin.vetclinik.entities.JoinedUserGroup;
+import ru.shchetinin.vetclinik.entities.Request;
+import ru.shchetinin.vetclinik.entities.JoinedUserRequest;
 import ru.shchetinin.vetclinik.entities.User;
 import ru.shchetinin.vetclinik.repositories.GroupRepository;
 import ru.shchetinin.vetclinik.repositories.JoinedUserGroupRepository;
@@ -32,7 +32,7 @@ public class HomeGroupMembersService {
 
     public ResponseEntity<List<UserDto>> getUsersFromGroup(UUID groupId,
                                                            Principal principal){
-        Optional<Group> group = groupRepository.findById(groupId);
+        Optional<Request> group = groupRepository.findById(groupId);
 
         isGroupExist(group);
         isRealCreator(group.get(), principal);
@@ -52,16 +52,15 @@ public class HomeGroupMembersService {
     public void addUserInGroup(UUID groupId,
                                String userId,
                                Principal principal){
-        Optional<Group> group = groupRepository.findById(groupId);
+        Optional<Request> group = groupRepository.findById(groupId);
         User user = userRepo.findByUsername(userId);
 
         isUserExist(user);
         isGroupExist(group);
         isRealCreator(group.get(), principal);
 
-        JoinedUserGroup jug = new JoinedUserGroup();
+        JoinedUserRequest jug = new JoinedUserRequest();
         jug.setUser(user);
-        jug.setGroup(group.get());
         jug.setNumberClasses(0);
         jugRepository.save(jug);
     }
@@ -69,7 +68,7 @@ public class HomeGroupMembersService {
     public void deleteUserFromGroup(UUID groupId,
                                     String userId,
                                     Principal principal){
-        Optional<Group> group = groupRepository.findById(groupId);
+        Optional<Request> group = groupRepository.findById(groupId);
         User user = userRepo.findByUsername(userId);
 
         isUserExist(user);
@@ -85,14 +84,14 @@ public class HomeGroupMembersService {
     public void plusNumberOfCLasses(UUID groupId,
                                     UserPlusDto userPlusDto,
                                     Principal principal){
-        Optional<Group> group = groupRepository.findById(groupId);
+        Optional<Request> group = groupRepository.findById(groupId);
         User user = userRepo.findByUsername(userPlusDto.getUsername());
 
         isUserExist(user);
         isGroupExist(group);
         isRealCreator(group.get(), principal);
 
-        JoinedUserGroup jug = jugRepository.findByUserAndGroup(user, group.get());
+        JoinedUserRequest jug = jugRepository.findByUserAndGroup(user, group.get());
         Integer curNumberClasses = jug.getNumberClasses();
         jug.setNumberClasses(curNumberClasses + userPlusDto.getPlus());
         jugRepository.save(jug);
@@ -102,14 +101,14 @@ public class HomeGroupMembersService {
                                      UserMinusDto userMinusDto,
                                      Principal principal){
 
-        Optional<Group> group = groupRepository.findById(groupId);
+        Optional<Request> group = groupRepository.findById(groupId);
         User user = userRepo.findByUsername(userMinusDto.getUsername());
 
         isUserExist(user);
         isGroupExist(group);
         isRealCreator(group.get(), principal);
 
-        JoinedUserGroup jug = jugRepository.findByUserAndGroup(user, group.get());
+        JoinedUserRequest jug = jugRepository.findByUserAndGroup(user, group.get());
         Integer curNumberClasses = jug.getNumberClasses();
         jug.setNumberClasses(curNumberClasses - userMinusDto.getMinus());
         jugRepository.save(jug);

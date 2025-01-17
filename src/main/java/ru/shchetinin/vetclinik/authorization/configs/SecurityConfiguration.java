@@ -36,6 +36,8 @@ public class SecurityConfiguration {
 
     @Value("${services.frontend}")
     private String frontendService;
+    @Value("${services.frontend2}")
+    private String frontendService2;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(11);
@@ -50,42 +52,41 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth ->
-                        auth
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/registration", HttpMethod.POST.name()))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/auth"))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/activation/*"))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/logout"))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/h2-console/**"))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/swagger-ui/index.html", HttpMethod.GET.name()))
-                                .permitAll()
-                                .requestMatchers(
-                                        new AntPathRequestMatcher("/v3/api-docs", HttpMethod.GET.name()))
-                                .permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/groups/**"))
-                                .authenticated()
-                                .anyRequest().hasRole(RoleCheck.ADMIN.name())
-                )
+//                .authorizeHttpRequests(auth ->
+//                        auth
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/registration", HttpMethod.POST.name()))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/api"))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/auth"))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/activation/*"))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/logout"))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/h2-console/**"))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/swagger-ui/index.html", HttpMethod.GET.name()))
+//                                .permitAll()
+//                                .requestMatchers(
+//                                        new AntPathRequestMatcher("/v3/api-docs", HttpMethod.GET.name()))
+//                                .permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/groups/**"))
+//                                .authenticated()
+//                                .anyRequest().hasRole(RoleCheck.ADMIN.name())
+//                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-                .exceptionHandling(exceptionHandling ->
-                    exceptionHandling.authenticationEntryPoint(
-                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-                    )
-                )
+
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -94,7 +95,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(frontendService));
+        configuration.setAllowedOrigins(Arrays.asList(frontendService, frontendService2));
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
