@@ -22,14 +22,15 @@ public class UserService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null){
+
+        var user = userRepository.findByUsername(username);
+        if (user.isEmpty()){
             throw new UsernameNotFoundException("User is not found");
         }
         Authority authority = authorityRepository.findByUsername(username);
         return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
+                user.get().getUsername(),
+                user.get().getPassword(),
                 Collections.singleton(new SimpleGrantedAuthority(authority.getAuthority()))
         );
     }

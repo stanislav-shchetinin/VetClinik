@@ -10,7 +10,6 @@ import java.util.*;
 @Getter
 @Entity
 @Table(name = "users")
-@AllArgsConstructor
 @NoArgsConstructor
 public class User implements Comparable<User>{
 
@@ -20,9 +19,6 @@ public class User implements Comparable<User>{
     private String activationCode;
     private boolean enabled;
     private RoleAdd role;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<JoinedUserRequest> jug = new ArrayList<>();
 
     public User(String username, String password, String activationCode, boolean enabled, RoleAdd roleAdd) {
         this.username = username;

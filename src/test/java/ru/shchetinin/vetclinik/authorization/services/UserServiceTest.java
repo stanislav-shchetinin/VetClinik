@@ -10,9 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.shchetinin.vetclinik.authorization.dao.AuthorityRepository;
+import ru.shchetinin.vetclinik.authorization.roles.RoleAdd;
 import ru.shchetinin.vetclinik.repositories.UserRepository;
 import ru.shchetinin.vetclinik.authorization.entities.Authority;
 import ru.shchetinin.vetclinik.entities.User;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertThrows;
@@ -36,7 +39,7 @@ public class UserServiceTest {
     @Test
     public void getUsername_invalidName_returnUsernameNotFoundException() {
         User user = new User("Name", "Password",
-                "ActivationCode", true);
+                "ActivationCode", true, RoleAdd.ROLE_USER);
         when(userRepository.findByUsername(user.getUsername()))
                 .thenReturn(null);
         assertThrows(UsernameNotFoundException.class,
@@ -46,10 +49,10 @@ public class UserServiceTest {
     @Test
     public void getUsername_validName_returnOk() {
         User user = new User("Name", "Password",
-                "ActivationCode", true);
+                "ActivationCode", true, RoleAdd.ROLE_USER);
         Authority authority = new Authority(user.getUsername(), "ROLE_USER");
         when(userRepository.findByUsername(user.getUsername()))
-                .thenReturn(user);
+                .thenReturn(Optional.of(user));
         when(authorityRepository.findByUsername(user.getUsername()))
                 .thenReturn(authority);
         UserDetails userDetails = userService.loadUserByUsername(user.getUsername());

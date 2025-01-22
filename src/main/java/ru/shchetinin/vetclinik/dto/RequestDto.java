@@ -13,7 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestDto implements Serializable {
-    private UUID id;
     private String phone;
     private String bread;
     private String size;

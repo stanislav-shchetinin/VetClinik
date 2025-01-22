@@ -3,6 +3,7 @@ package ru.shchetinin.vetclinik.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.shchetinin.vetclinik.authorization.dto.ClinicDto;
@@ -21,27 +22,21 @@ public class ClinicService {
     private ClinicRepository clinicRepository;
 
     @Autowired
-    private UserRepository userRepo;
+    private UserRepository userRepository;
 
-    public Clinic saveClinic(Clinic clinic, String username) {
-        User user = userRepo.findByUsername(username);
-        if (user == null) {
-            throw new IllegalArgumentException("User not found");
-        }
-        log.info("ugu: " + user.getUsername());
-        log.info("cgu: " + clinic.getUser().getUsername());
-        if (!user.getUsername().equals(clinic.getUser().getUsername())) {
-            throw new SecurityException("User does not match the clinic");
-        }
-
+    public Clinic saveClinic(Clinic clinic, String adminUsername) {
+        User adminUser = userRepository.findByUsername(adminUsername)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        clinic.setAdminUser(adminUser);
         return clinicRepository.save(clinic);
     }
 
-    public Optional<Clinic> getClinicByUser(String username) {
-        return clinicRepository.findByUserUsername(username);
+    public Clinic getClinicByUser(String username) {
+        return clinicRepository.findByAdminUsername(username);
     }
 
-    public Page<Clinic> getClinics(Pageable pageable) {
-        return clinicRepository.findAll(pageable);
+    public Page<Clinic> getAllClinics(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return clinicRepository.findAllClinics(pageable);
     }
 }

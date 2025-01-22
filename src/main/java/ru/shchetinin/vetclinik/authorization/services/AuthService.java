@@ -24,17 +24,17 @@ public class AuthService {
 
     public ResponseEntity<JwtResponse> createAuthToken(@RequestBody JwtRequest authRequest){
 
-        User user = userRepository.findByUsername(authRequest.getUsername());
-        if (user == null ||
-                !passwordEncoder.matches(authRequest.getPassword(), user.getPassword())){
+        var user = userRepository.findByUsername(authRequest.getUsername());
+        if (user.isEmpty() ||
+                !passwordEncoder.matches(authRequest.getPassword(), user.get().getPassword())){
             throw new UsernameNotFoundException("Uncorrected username or password");
         }
-        if (!user.isEnabled()){
+        if (!user.get().isEnabled()){
             throw new UserIsNotActiveException("User's email is not active");
         }
         UserDetails userDetails = userService.loadUserByUsername(authRequest.getUsername());
         String token = jwtTokenUtils.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token, user.getRole()));
+        return ResponseEntity.ok(new JwtResponse(token, user.get().getRole()));
     }
 }

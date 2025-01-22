@@ -31,12 +31,12 @@ databaseChangeLog:
                   name: clinic_phone
                   type: varchar(50)
               - column:
-                  name: user_username
+                  name: admin_user_id
                   type: varchar(512)
                   constraints:
                     nullable: false
         - addForeignKeyConstraint:
             baseTableName: clinic
-            baseColumnNames: user_username
+            baseColumnNames: admin_user_id
             referencedTableName: users
             referencedColumnNames: username

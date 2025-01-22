@@ -36,7 +36,7 @@ public class RegistrationService {
 
     public Response addNewUser(User user) throws UserAlreadyExistsException {
         String login = user.getUsername();
-        boolean isUserAlreadyExist = userRepo.findByUsername(login) != null;
+        boolean isUserAlreadyExist = userRepo.findByUsername(login).isPresent();
         log.debug("login: {}, isUserAlreadyExist: {}", login, isUserAlreadyExist);
         if (isUserAlreadyExist){
             throw new UserAlreadyExistsException();
@@ -44,7 +44,7 @@ public class RegistrationService {
             user.setEnabled(false);
             user.setPassword(encoder.encode(user.getPassword()));
             user.setActivationCode(UUID.randomUUID().toString());
-            userRepo.save(user);
+            User savedUser =userRepo.save(user);
             log.debug("USER. enabled: {}, password: {}", user.isEnabled(), user.getPassword());
             Authority authority = new Authority(user.getUsername(), String.valueOf(user.getRole()));
             authorityRepo.save(authority);
@@ -52,7 +52,7 @@ public class RegistrationService {
             sendEmail(user);
             if (user.getRole().equals(RoleAdd.ROLE_CLINIC)) {
                 Clinic clinic = new Clinic();
-                clinic.setUser(user);
+                clinic.setAdminUser(savedUser);
                 clinicRepository.save(clinic);
             }
             return new Response(HttpStatus.OK.value(), "User successfully added");

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.shchetinin.vetclinik.authorization.roles.RoleAdd;
 import ru.shchetinin.vetclinik.repositories.UserRepository;
 import ru.shchetinin.vetclinik.authorization.dto.JwtRequest;
 import ru.shchetinin.vetclinik.authorization.dto.JwtResponse;
@@ -20,6 +21,7 @@ import ru.shchetinin.vetclinik.authorization.exceptions.UserIsNotActiveException
 import ru.shchetinin.vetclinik.authorization.utils.JwtTokenUtils;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -61,7 +63,7 @@ public class AuthServiceTest {
         User user = new User();
         user.setPassword("NotPassword");
         when(userRepository.findByUsername(authRequest.getUsername()))
-                .thenReturn(user);
+                .thenReturn(Optional.of(user));
         when(passwordEncoder.matches(authRequest.getPassword(), user.getPassword())).thenReturn(false);
         assertThrows(UsernameNotFoundException.class,
                 () -> authService.createAuthToken(authRequest));
@@ -72,7 +74,7 @@ public class AuthServiceTest {
         User user = mock(User.class);
         user.setPassword("Password");
         when(userRepository.findByUsername(authRequest.getUsername()))
-                .thenReturn(user);
+                .thenReturn(Optional.of(user));
         when(passwordEncoder.matches(authRequest.getPassword(), user.getPassword())).thenReturn(true);
         when(user.isEnabled()).thenReturn(false);
         assertThrows(UserIsNotActiveException.class,
@@ -90,7 +92,7 @@ public class AuthServiceTest {
         );
 
         when(userRepository.findByUsername(authRequest.getUsername()))
-                .thenReturn(user);
+                .thenReturn(Optional.of(user));
         when(passwordEncoder.matches(authRequest.getPassword(), user.getPassword())).thenReturn(true);
         when(user.isEnabled()).thenReturn(true);
         when(userService.loadUserByUsername(authRequest.getUsername()))
@@ -99,6 +101,6 @@ public class AuthServiceTest {
         ResponseEntity<JwtResponse> response = authService.createAuthToken(authRequest);
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertThat(response.getBody()).isNotNull();
-        assertEquals(response.getBody().getToken(), new JwtResponse(jwtTokenUtils.generateToken(userDetails)).getToken());
+        assertEquals(response.getBody().getToken(), new JwtResponse(jwtTokenUtils.generateToken(userDetails), RoleAdd.ROLE_USER).getToken());
     }
 }

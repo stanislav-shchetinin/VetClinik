@@ -12,6 +12,8 @@ import ru.shchetinin.vetclinik.VetClinikApplication;
 import ru.shchetinin.vetclinik.repositories.UserRepository;
 import ru.shchetinin.vetclinik.entities.User;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -37,9 +39,8 @@ public class RegistrationControllerTest {
 
     @Test
     public void getCorrectRegRequest_returnOk() throws Exception {
-        User user = userRepo.findByUsername("stas.shc@gmail.com");
-        if (user != null)
-            userRepo.delete(user);
+        Optional<User> user = userRepo.findByUsername("stas.shc@gmail.com");
+        user.ifPresent(value -> userRepo.delete(value));
         mockMvc.perform(post(URI_REG)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\": \"stas.shc@gmail.com\", \"password\": \"12345\"}")
@@ -61,10 +62,10 @@ public class RegistrationControllerTest {
         String email = "stas.shc@gmail.com";
         getCorrectRegRequest_returnOk();
 
-        User user = userRepo.findByUsername(email);
-        assertThat(user).isNotNull();
+        Optional<User> user = userRepo.findByUsername(email);
+        assertThat(user).isPresent();
 
-        mockMvc.perform(get(URI_ACTIVATION + "/" + user.getActivationCode()))
+        mockMvc.perform(get(URI_ACTIVATION + "/" + user.get().getActivationCode()))
                 .andExpect(status().isOk());
 
     }

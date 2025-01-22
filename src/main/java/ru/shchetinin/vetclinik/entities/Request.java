@@ -1,5 +1,6 @@
 package ru.shchetinin.vetclinik.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -10,48 +11,44 @@ import java.util.*;
 @Setter
 @Getter
 @Entity
-@Table(name = "groups_e")
+@Table(name = "request")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Request implements Comparable<Request>{
+public class Request {
 
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String phone;
-    private String bread;
+
+    private String breed;
+
     private String size;
+
     private String weight;
+
     private String specialRequirements;
+
     private String street;
+
     private String house;
+
     private String flat;
-    private Long clinicId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_name", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User owner;
+    @ManyToOne
+    @JoinColumn(name = "clinic_id", nullable = false)
+    @JsonIgnore
+    private Clinic clinic;
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
-    private List<JoinedUserRequest> jug = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "carrier_id")
+    @JsonIgnore
+    private Carrier carrier;
 
-    public Request(UUID id, String phone, String bread, String size, String weight, String specialRequirements, String street, String house, String flat, Long clinicId, User owner) {
-        this.id = id;
-        this.phone = phone;
-        this.bread = bread;
-        this.size = size;
-        this.weight = weight;
-        this.specialRequirements = specialRequirements;
-        this.street = street;
-        this.house = house;
-        this.flat = flat;
-        this.clinicId = clinicId;
-        this.owner = owner;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
 
-    @Override
-    public int compareTo(Request o) {
-        return id.compareTo(o.id);
-    }
 }

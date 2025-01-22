@@ -9,11 +9,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.shchetinin.vetclinik.authorization.dao.AuthorityRepository;
+import ru.shchetinin.vetclinik.authorization.roles.RoleAdd;
 import ru.shchetinin.vetclinik.repositories.UserRepository;
 import ru.shchetinin.vetclinik.entities.User;
 import ru.shchetinin.vetclinik.authorization.exceptions.ActivationCodeNotFoundException;
 import ru.shchetinin.vetclinik.authorization.exceptions.UserAlreadyExistsException;
 import ru.shchetinin.vetclinik.responses.Response;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -40,11 +43,11 @@ public class RegistrationServiceTest {
     @MockBean
     private EmailSender emailSender;
 
-    private final User user = new User("Name", "Password", "activationCode", true);
+    private final User user = new User("Name", "Password", "activationCode", true, RoleAdd.ROLE_USER);
 
     @Test
     public void getUser_invalidName_returnUserAlreadyExistsException() {
-        when(userRepo.findByUsername(user.getUsername())).thenReturn(user);
+        when(userRepo.findByUsername(user.getUsername())).thenReturn(Optional.of(user));
         assertThrows(UserAlreadyExistsException.class, () -> registrationService.addNewUser(user));
     }
     @Test
